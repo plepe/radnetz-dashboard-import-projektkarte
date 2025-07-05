@@ -5,7 +5,7 @@ import yaml from 'js-yaml'
 import DrupalREST from 'drupal-rest'
 import load_dashboard_data from './src/load_dashboard_data.js'
 import load_projektkarte_projekt from './src/load_projektkarte_projekt.js'
-import convertToDashboard from './src/convertFromDashboard.js'
+import convertToDashboard from './src/convertToDashboard.js'
 import { init as statusDashboardInit } from './src/statusDashboard.js'
 
 const config = yaml.load(fs.readFileSync('config.yaml'))
