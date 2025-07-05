@@ -1,6 +1,7 @@
 {
   "type": "module",
   "dependencies": {
-    "async": "^3.2.6"
+    "async": "^3.2.6",
+    "drupal-rest": "github:plepe/drupal-rest-js"
   }
 }

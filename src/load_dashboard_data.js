@@ -1,8 +1,5 @@
-function load_dashboard_data (config, callback) {
-  fetch('https://radnetz-dashboard.radlobby.at/projektkarte.json', {
-  })
-    .then(req => req.json())
-    .then(data => callback(null, data))
+function load_dashboard_data (config, drupal, callback) {
+  drupal.loadRestExport('rest/projektkarte', { paginated: true }, callback)
 }
 
 export default load_dashboard_data

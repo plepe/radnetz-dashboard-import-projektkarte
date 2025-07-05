@@ -1,19 +1,25 @@
 #!/usr/bin/env node
 import async from 'async'
+import DrupalREST from 'drupal-rest'
 import load_dashboard_data from './src/load_dashboard_data.js'
 import load_projektkarte_projekt from './src/load_projektkarte_projekt.js'
 
 const config = {
 }
 
+const drupal = new DrupalREST({
+  url: 'https://radnetz-dashboard.radlobby.at'
+})
+
 let dashboard_data
 
 async.waterfall([
-  (done) => load_dashboard_data(config, done),
+  (done) => drupal.login(done),
+  (done) => load_dashboard_data(config, drupal, done),
   (result, done) => {
     dashboard_data = result
     async.mapSeries(dashboard_data, (data, done) => {
-      const id = data.field_projektkarte_id
+      const id = data.field_projektkarte_id[0].value
       load_projektkarte_projekt(id, (err, result) => {
         console.log(id, JSON.stringify(result, null, '  '))
       })
