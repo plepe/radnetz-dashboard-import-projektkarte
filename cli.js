@@ -1,14 +1,17 @@
 #!/usr/bin/env node
+import fs from 'fs'
 import async from 'async'
+import yaml from 'js-yaml'
 import DrupalREST from 'drupal-rest'
 import load_dashboard_data from './src/load_dashboard_data.js'
 import load_projektkarte_projekt from './src/load_projektkarte_projekt.js'
 
-const config = {
-}
+const config = yaml.load(fs.readFileSync('config.yaml'))
 
 const drupal = new DrupalREST({
-  url: 'https://radnetz-dashboard.radlobby.at'
+  url: config.drupalUrl,
+  user: config.drupalUser,
+  pass: config.drupalPass
 })
 
 let dashboard_data
