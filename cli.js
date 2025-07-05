@@ -46,6 +46,9 @@ async.waterfall([
           return done()
         }
 
+        // console.log('protokoll', protokollEntry)
+        // console.log('update', update)
+
         async.waterfall([
           (done) => {
             drupal.nodeSave(null, protokollEntry, {}, (err, result) => {

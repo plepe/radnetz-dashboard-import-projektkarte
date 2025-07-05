@@ -19,11 +19,11 @@ const fields = {
     name: 'Länge',
     property: 'value',
     checkEqual: (pk, dash) => Math.abs(pk[0].value - dash[0].value) < 0.1
+  },
+  field_projektkarte_geometrie: {
+    name: 'Geometrie',
+    property: 'value'
   }
-//  field_projektkarte_geometry: {
-//    name: 'Geometrie',
-//    property: 'value'
-//  }
 }
 
 function findChanges (project_pk, project_dash, protokollEntry) {
