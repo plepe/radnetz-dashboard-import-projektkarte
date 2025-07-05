@@ -5,6 +5,7 @@ import yaml from 'js-yaml'
 import DrupalREST from 'drupal-rest'
 import load_dashboard_data from './src/load_dashboard_data.js'
 import load_projektkarte_projekt from './src/load_projektkarte_projekt.js'
+import { init as statusDashboardInit } from './src/statusDashboard.js'
 
 const config = yaml.load(fs.readFileSync('config.yaml'))
 
@@ -18,6 +19,7 @@ let dashboard_data
 
 async.waterfall([
   (done) => drupal.login(done),
+  (done) => statusDashboardInit(drupal, done),
   (done) => load_dashboard_data(config, drupal, done),
   (result, done) => {
     dashboard_data = result
