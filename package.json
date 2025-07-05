@@ -1,8 +1,12 @@
 {
   "type": "module",
+  "scripts": {
+    "lint": "standard --fix cli.js src/*.js"
+  },
   "dependencies": {
     "async": "^3.2.6",
     "drupal-rest": "github:plepe/drupal-rest-js",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "standard": "^17.1.2"
   }
 }
