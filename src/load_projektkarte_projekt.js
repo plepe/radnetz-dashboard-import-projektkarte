@@ -1,7 +1,7 @@
 function load_projektkarte_projekt (id, callback) {
   fetch('https://dataconnector.maptoolkit.net/wien/fahrradwien/' + id + '.geojson?api_key=wien', {
     headers: {
-      'Origin': 'https://www.fahrradwien.at'
+      Origin: 'https://www.fahrradwien.at'
     }
   })
     .then(req => req.json())

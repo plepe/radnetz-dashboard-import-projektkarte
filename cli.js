@@ -29,7 +29,7 @@ async.waterfall([
       const id = project_dash.field_projektkarte_id[0].value
       load_projektkarte_projekt(id, (err, project_pk) => {
         let update = convertToDashboard(project_pk)
-        let protokollEntry = {
+        const protokollEntry = {
           type: [{ target_id: 'status_aenderung' }],
           title: [{ value: 'änderung' }],
           field_datum: [{ value: new Date().toISOString().substr(0, 10) }]
