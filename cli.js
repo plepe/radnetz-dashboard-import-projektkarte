@@ -65,6 +65,11 @@ async.waterfall([
             update.field_projektkarte_protokoll = project_dash.field_projektkarte_protokoll
             update.field_projektkarte_protokoll.push({ target_id: protokollId })
 
+            // if no manual geometry has been entered, copy from projektkarte
+            if (!project_dash.field_geometry.length) {
+              update.field_geometry = update.field_projektkarte_geometrie
+            }
+
             drupal.nodeSave(project_dash.nid[0].value, update, {}, (err, result) => {
               if (err) { return done(err) }
 
