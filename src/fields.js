@@ -10,6 +10,7 @@ const fields = {
   field_projektkarte_jahr: {
     name: 'Jahr',
     property: 'value',
+    parse_property: (value) => parseInt(value),
     projektkarte_property: 'year_of_construction'
   },
   field_projektkarte_massnahme: {
