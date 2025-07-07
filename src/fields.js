@@ -7,6 +7,11 @@ const fields = {
     property: 'value',
     projektkarte_property: 'title'
   },
+  field_projektkarte_jahr: {
+    name: 'Jahr',
+    property: 'value',
+    projektkarte_property: 'year_of_construction'
+  },
   field_projektkarte_massnahme: {
     name: 'Maßnahme',
     property: 'value',
