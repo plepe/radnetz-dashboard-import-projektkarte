@@ -38,7 +38,8 @@ const fields = {
     name: 'Status',
     property: 'target_id',
     projektkarte_property: 'status',
-    parse_property: (value) => statusGet(value)
+    parse_property: (value) => statusGet(value),
+    hide_changes: true
   }
 }
 

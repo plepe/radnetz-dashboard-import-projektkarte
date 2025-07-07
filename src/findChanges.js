@@ -8,11 +8,17 @@ function findChanges (project_pk, project_dash, protokollEntry) {
     if (!project_dash[key].length) {
     } else if (def.checkEqual) {
       if (!def.checkEqual(project_pk[key], project_dash[key])) {
-        text += def.name + ' geändert von "' + project_dash[key][0][def.property] + '"<br>'
+        if (def.hide_changes) {
+          text += def.name + ' geändert von "' + project_dash[key][0][def.property] + '"<br>'
+        }
+
         update[key] = project_pk[key]
       }
     } else if (project_pk[key][0][def.property] !== project_dash[key][0][def.property]) {
-      text += def.name + ' geändert von "' + project_dash[key][0][def.property] + '"<br>'
+      if (def.hide_changes) {
+        text += def.name + ' geändert von "' + project_dash[key][0][def.property] + '"<br>'
+      }
+
       update[key] = project_pk[key]
     }
   })
