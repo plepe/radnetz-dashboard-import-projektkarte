@@ -37,6 +37,10 @@ async.waterfall([
 
         if (project_dash.field_projektkarte_titel.length) {
           update = findChanges(update, project_dash, protokollEntry)
+
+          if (Object.keys(update).length) {
+            update.field_projektkarte_aenderung = [{ value: new Date().toISOString().substr(0, 10) }]
+          }
         } else {
           protokollEntry.field_status = update.field_projektkarte_status
         }
