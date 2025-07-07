@@ -6,20 +6,17 @@ function convertToDashboard (project_pk) {
   const result = {}
 
   Object.entries(fields).forEach(([key, def]) => {
-    if (def.projektkarte_property) {
-      let value = project_pk.properties[def.projektkarte_property]
+    if (def.projektkarte_property || def.parse_property) {
+      let value = def.projektkarte_property ? project_pk.properties[def.projektkarte_property] : null
 
-      if (def.parse_projektkarte_property) {
-        value = def.parse_projektkarte_property(value)
+      if (def.parse_property) {
+        value = def.parse_property(value, project_pk)
       }
 
       result[key] = [{}]
       result[key][0][def.property] = value
     }
   })
-
-  result.field_projektkarte_status = [{ target_id: statusGet(project_pk.properties.status) }]
-  result.field_projektkarte_geometrie = [{ value: wkx.Geometry.parseGeoJSON(project_pk.geometry).toWkt() }]
 
   return result
 }

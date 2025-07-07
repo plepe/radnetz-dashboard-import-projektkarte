@@ -1,3 +1,6 @@
+import wkx from 'wkx'
+import { get as statusGet } from './statusDashboard.js'
+
 const fields = {
   field_projektkarte_titel: {
     name: 'Ort',
@@ -28,7 +31,14 @@ const fields = {
   },
   field_projektkarte_geometrie: {
     name: 'Geometrie',
-    property: 'value'
+    property: 'value',
+    parse_property: (value, item) => wkx.Geometry.parseGeoJSON(item.geometry).toWkt()
+  },
+  field_projektkarte_status: {
+    name: 'Status',
+    property: 'target_id',
+    projektkarte_property: 'status',
+    parse_property: (value) => statusGet(value)
   }
 }
 

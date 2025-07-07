@@ -18,7 +18,6 @@ function findChanges (project_pk, project_dash, protokollEntry) {
   })
 
   if (project_pk.field_projektkarte_status[0].target_id !== project_dash.field_projektkarte_status[0].target_id) {
-    update.field_projektkarte_status = project_pk.field_projektkarte_status
     protokollEntry.field_status = project_pk.field_projektkarte_status
   }
 
