@@ -6,9 +6,11 @@ function load_projektkarte_projekt (id, callback) {
   })
     .then(req => req.json())
     .then(data => {
-      data.properties.link = JSON.parse(data.properties.link)
       if (data.properties.link) {
+        data.properties.link = JSON.parse(data.properties.link)
         data.properties.link = data.properties.link.url
+      } else {
+        data.properties.link = null
       }
 
       data.properties.images = JSON.parse(data.properties.images)
