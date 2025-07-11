@@ -27,6 +27,12 @@ async.waterfall([
     dashboard_data = result
     async.mapSeries(dashboard_data, (project_dash, done) => {
       const id = project_dash.field_projektkarte_id[0].value
+
+      if (id === 0) {
+        console.log('skip', project_dash.nid[0].value)
+        return done()
+      }
+
       load_projektkarte_projekt(id, (err, project_pk) => {
         let update = convertToDashboard(project_pk)
         const protokollEntry = {
