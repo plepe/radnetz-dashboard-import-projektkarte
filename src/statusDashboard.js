@@ -4,13 +4,14 @@ function init (drupal, callback) {
   values = {}
 
   drupal.loadRestExport('rest/status', { paginated: true }, (err, list) => {
+    if (err) { return callback(err) }
+
     list.forEach(item => {
       if (item.field_projektkarte_status.length) {
         values[item.field_projektkarte_status[0].value] = item.tid[0].value
       }
     })
 
-    console.log(values)
     callback(null)
   })
 }
