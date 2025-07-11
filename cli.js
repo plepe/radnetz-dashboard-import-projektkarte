@@ -27,9 +27,10 @@ async.waterfall([
     dashboard_data = result
     async.mapSeries(dashboard_data, (project_dash, done) => {
       const id = project_dash.field_projektkarte_id[0].value
+      const nid = project_dash.nid[0].value
 
       if (id === 0) {
-        console.log('skip', project_dash.nid[0].value)
+        console.log('skip', nid)
         return done()
       }
 
@@ -52,12 +53,12 @@ async.waterfall([
         }
 
         if (!Object.keys(update).length) {
-          console.log('no changes', project_dash.nid[0].value)
+          console.log('no changes', nid)
           return done()
         }
 
         // console.log('protokoll', protokollEntry)
-        // console.log('update', update)
+        // console.log('update', nid, update)
 
         async.waterfall([
           (done) => {
@@ -76,10 +77,10 @@ async.waterfall([
               update.field_geometry = update.field_projektkarte_geometrie
             }
 
-            drupal.nodeSave(project_dash.nid[0].value, update, {}, (err, result) => {
+            drupal.nodeSave(nid, update, {}, (err, result) => {
               if (err) { return done(err) }
 
-              console.log('done', project_dash.nid[0].value)
+              console.log('done', nid)
               done()
             })
           }
