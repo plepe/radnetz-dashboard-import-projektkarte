@@ -52,6 +52,11 @@ async.waterfall([
           protokollEntry.field_status = update.field_projektkarte_status
         }
 
+        // für 'weitere Bauprojekte', change status if status in projektkarte changes
+        if (project_dash.type[0].target_id == 'bauprojekte_andere' && update.field_projektkarte_status) {
+          update.field_status = update.field_projektkarte_status
+        }
+
         if (!Object.keys(update).length) {
           console.log('no changes', nid)
           return done()
