@@ -4,6 +4,7 @@ import async from 'async'
 import yaml from 'js-yaml'
 import DrupalREST from 'drupal-rest'
 import load_dashboard_data from './src/load_dashboard_data.js'
+import load_projektkarte from './src/load_projektkarte.js'
 import fields from './src/fields.js'
 
 const config = yaml.load(fs.readFileSync('config.yaml'))
@@ -16,6 +17,7 @@ const drupal = new DrupalREST({
 
 let dashboard_data
 let mapping = {}
+let converted = {}
 let all = {}
 
 async.waterfall([
@@ -25,6 +27,12 @@ async.waterfall([
     async.each(result, migrate_data, done)
     //console.log(JSON.stringify(result, null, '  '))
   },
+  (done) => load_projektkarte(config, drupal, (err, result) => {
+    result.forEach(item => {
+      converted[item.field_id[0].value] = item
+    })
+    done(err)
+  }),
   (done) => {
     async.eachSeries(all, update_status_change, done)
   },
@@ -104,6 +112,12 @@ function update_status_change (item, callback) {
 
 function saveAll (data, callback) {
   async.eachSeries(data, (item, done) => {
+    if (item.field_id[0].value in converted) {
+      const body = converted[item.field_id[0].value]
+      console.log(item.field_id[0].value, 'already entered', body.nid[0].value)
+      return done()
+    }
+
     drupal.nodeSave(null, item, {}, (err, body) => {
       if (err) { return done(err) }
 
