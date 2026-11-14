@@ -96,6 +96,11 @@ async.waterfall([
 
         async.waterfall([
           (done) => {
+            if (!protokollEntry.body && !protokollEntry.field_status) {
+              // skip protokoll entry
+              return done(null, null)
+            }
+
             drupal.nodeSave(null, protokollEntry, {}, (err, result) => {
               if (err) { return done(err) }
               done(null, result.nid[0].value)
@@ -103,8 +108,11 @@ async.waterfall([
           },
           (protokollId, done) => {
             update.type = project_dash.type
-            update.field_protokoll = project_dash.field_protokoll
-            update.field_protokoll.push({ target_id: protokollId })
+
+            if (protokollId !== null) {
+              update.field_protokoll = project_dash.field_protokoll
+              update.field_protokoll.push({ target_id: protokollId })
+            }
 
             drupal.nodeSave(nid, update, {}, (err, result) => {
               if (err) { return done(err) }
