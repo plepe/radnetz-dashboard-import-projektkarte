@@ -24,6 +24,9 @@ function load_projektkarte_projekt (id, callback) {
 
       callback(null, data)
     })
+    .catch(e => {
+      callback(e)
+    })
 }
 
 export default load_projektkarte_projekt
