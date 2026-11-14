@@ -6,6 +6,13 @@ function findChanges (project_pk, project_dash, protokollEntry) {
 
   Object.entries(fields).forEach(([key, def]) => {
     if (!project_dash[key].length) {
+      if (project_pk[key].length && project_pk[key][0][def.property]) {
+        if (!def.hide_changes) {
+          text += def.name + ' geändert von ""<br>'
+        }
+
+        update[key] = project_pk[key]
+      }
     } else if (def.checkEqual) {
       if (!def.checkEqual(project_pk[key], project_dash[key])) {
         if (!def.hide_changes) {
