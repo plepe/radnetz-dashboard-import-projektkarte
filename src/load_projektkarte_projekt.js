@@ -4,8 +4,14 @@ function load_projektkarte_projekt (id, callback) {
       Origin: 'https://www.fahrradwien.at'
     }
   })
-    .then(req => req.json())
+    .then(req => req.text())
     .then(data => {
+      if (data === 'no item found') {
+        return callback(null, null)
+      }
+
+      data = JSON.parse(data)
+
       if (data.properties.link) {
         data.properties.link = JSON.parse(data.properties.link)
         data.properties.link = data.properties.link.url
