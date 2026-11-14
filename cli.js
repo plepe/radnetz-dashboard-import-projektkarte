@@ -106,12 +106,6 @@ async.waterfall([
             update.field_protokoll = project_dash.field_protokoll
             update.field_protokoll.push({ target_id: protokollId })
 
-            // TODO: update referencing node
-            // if no manual geometry has been entered, copy from projektkarte
-            //if (!project_dash.field_geometry.length) {
-            //  update.field_geometry = update.field_projektkarte_geometrie
-            //}
-
             drupal.nodeSave(nid, update, {}, (err, result) => {
               if (err) { return done(err) }
 
@@ -122,6 +116,31 @@ async.waterfall([
           }
         ], (err) => done(err))
       })
+    }, done)
+  },
+  (done) => {
+    async.eachOfSeries(referenced_ids, (item, id, done) => {
+      const dashes = dashboard_data.filter(project_dash => project_dash.field_id[0].value == id)
+      if (!dashes.length) {
+        console.log('not found', id)
+        return done()
+      }
+
+      const update = {}
+      const project_dash = dashes[0]
+
+      if (!item.field_geometry.length) {
+        update.field_geometry = project_dash.field_geometry
+      }
+
+      if (!Object.keys(update).length) {
+        return done()
+      }
+
+      update.type = item.type
+
+      console.log('updating referenced project', item.nid[0].value)
+      drupal.nodeSave(item.nid[0].value, update, {}, done)
     })
   }
 ])
