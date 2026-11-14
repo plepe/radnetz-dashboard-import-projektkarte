@@ -3,7 +3,8 @@ import fs from 'fs'
 import async from 'async'
 import yaml from 'js-yaml'
 import DrupalREST from 'drupal-rest'
-import load_dashboard_data from './src/load_dashboard_data.js'
+import load_projektkarte from './src/load_projektkarte.js'
+import get_referenced_ids from './src/get_referenced_ids.js'
 import load_projektkarte_projekt from './src/load_projektkarte_projekt.js'
 import convertToDashboard from './src/convertToDashboard.js'
 import { init as statusDashboardInit } from './src/statusDashboard.js'
@@ -18,13 +19,32 @@ const drupal = new DrupalREST({
 })
 
 let dashboard_data
+let referenced_ids
 
 async.waterfall([
   (done) => drupal.login(done),
   (done) => statusDashboardInit(drupal, done),
+  (done) => get_referenced_ids(config, drupal, (err, list) => {
+    referenced_ids = list
+    done(err)
+  }),
   (done) => load_projektkarte(config, drupal, done),
   (result, done) => {
     dashboard_data = result
+
+    Object.entries(referenced_ids).forEach(([id, nid]) => {
+      const dashs = dashboard_data.filter(project_dash => project_dash.field_id[0].value == id)
+
+      if (!dashs.length) {
+        dashboard_data.push({
+          type: [{target_id: 'bauprojekt_projektkarte'}],
+          nid: [{value: null}],
+          field_protokoll: [],
+          field_id: [{value: id}],
+        })
+      }
+    })
+
     async.mapSeries(dashboard_data, (project_dash, done) => {
       const id = project_dash.field_id[0].value
       const nid = project_dash.nid[0].value
@@ -37,7 +57,11 @@ async.waterfall([
           field_datum: [{ value: new Date().toISOString().substr(0, 10) }]
         }
 
-        if (project_pk) {
+        if (!nid) {
+          update = convertToDashboard(project_pk)
+          update.field_id = [{value: id}]
+          protokollEntry.field_status = update.field_status
+        } else if (project_pk) {
           update = convertToDashboard(project_pk)
 
           update = findChanges(update, project_dash, protokollEntry)
@@ -47,7 +71,7 @@ async.waterfall([
           update.field_status = []
         }
 
-        if (update.field_status) {
+        if (nid && update.field_status) {
           update.field_status_change = [{ value: new Date().toISOString().substr(0, 10) }]
         }
 
@@ -86,7 +110,7 @@ async.waterfall([
             drupal.nodeSave(nid, update, {}, (err, result) => {
               if (err) { return done(err) }
 
-              console.log('done', nid)
+              console.log('done', result.nid[0].value)
               done()
             })
           }
