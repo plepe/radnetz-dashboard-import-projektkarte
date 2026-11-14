@@ -58,6 +58,11 @@ async.waterfall([
         }
 
         if (!nid) {
+          if (!project_pk) {
+            console.log('not creating', id)
+            return done()
+          }
+
           update = convertToDashboard(project_pk)
           update.field_id = [{value: id}]
           protokollEntry.field_status = update.field_status
