@@ -39,7 +39,7 @@ async.waterfall([
 
         update = findChanges(update, project_dash, protokollEntry)
 
-        if (Object.keys(update).length) {
+        if (update.field_status) {
           update.field_status_change = [{ value: new Date().toISOString().substr(0, 10) }]
         }
 
