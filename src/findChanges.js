@@ -15,14 +15,16 @@ function findChanges (project_pk, project_dash, protokollEntry) {
       }
     } else if (def.checkEqual) {
       if (!def.checkEqual(project_pk[key], project_dash[key])) {
-        if (!def.hide_changes) {
+        const hide_changes = def.hide_changes === true || (typeof def.hide_changes === 'function' && def.hide_changes(project_pk[key], project_dash[key]))
+        if (!hide_changes) {
           text += def.name + ' geändert von "' + project_dash[key][0][def.property] + '"<br>'
         }
 
         update[key] = project_pk[key]
       }
     } else if (project_pk[key][0][def.property] !== project_dash[key][0][def.property]) {
-      if (!def.hide_changes) {
+      const hide_changes = def.hide_changes === true || (typeof def.hide_changes === 'function' && def.hide_changes(project_pk[key], project_dash[key]))
+      if (!hide_changes) {
         text += def.name + ' geändert von "' + project_dash[key][0][def.property] + '"<br>'
       }
 
