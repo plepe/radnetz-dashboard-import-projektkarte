@@ -32,7 +32,7 @@ async.waterfall([
   (result, done) => {
     dashboard_data = result
 
-    Object.entries(referenced_ids).forEach(([id, nid]) => {
+    Object.entries(referenced_ids).forEach(([id, item]) => {
       const dashs = dashboard_data.filter(project_dash => project_dash.field_id[0].value == id)
 
       if (!dashs.length) {
@@ -45,7 +45,7 @@ async.waterfall([
       }
     })
 
-    async.mapSeries(dashboard_data, (project_dash, done) => {
+    async.mapValuesSeries(dashboard_data, (project_dash, dash_index, done) => {
       const id = project_dash.field_id[0].value
       const nid = project_dash.nid[0].value
 
@@ -116,6 +116,7 @@ async.waterfall([
               if (err) { return done(err) }
 
               console.log('done', result.nid[0].value)
+              dashboard_data[dash_index] = result
               done()
             })
           }

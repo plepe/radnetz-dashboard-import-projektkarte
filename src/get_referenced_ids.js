@@ -8,7 +8,7 @@ function get_referenced_ids (config, drupal, callback) {
 
     list.forEach(item => {
       item.field_projektkarte_id.forEach(f => {
-        result[f.value] = item.nid[0].value
+        result[f.value] = item
       })
     })
 
