@@ -45,7 +45,37 @@ const fields = {
     old: 'field_projektkarte_geometrie',
     name: 'Geometrie',
     property: 'value',
-    parse_property: (value, item) => wkx.Geometry.parseGeoJSON(item.geometry).toWkt()
+    parse_property: (value, item) => wkx.Geometry.parseGeoJSON(item.geometry).toWkt(),
+    // for hide_changes, highlight changes only when lat/lon affected
+    hide_changes: (pk, dash) => {
+      let m = pk[0].value.match(/^MULTILINESTRING( Z|) \(\((.*)\)\)$/)
+      const pkv = m[2].split('),(')
+      m = dash[0].value.match(/^MULTILINESTRING( Z|) \(\((.*)\)\)$/)
+      const dashv = m[2].split('),(')
+
+      if (pkv.length !== dashv.length) {
+        return false
+      }
+
+      const notableChanges = pkv.filter((_p, i) => {
+        const pv = pkv[i].split(',').map(v => v.trim())
+        const dv = dashv[i].split(',').map(v => v.trim())
+
+        if (pv.length !== dv.length) {
+          return true
+        }
+
+        const valueChanges = pv.filter((_v, j) => {
+          const pc = pv[j].split(' ')
+          const dc = dv[j].split(' ')
+          return pc[0] !== dc[0] || pc[1] !== dc[1]
+        })
+
+        return valueChanges.length
+      })
+
+      return !notableChanges.length
+    }
   },
   field_status: {
     old: 'field_projektkarte_status',
