@@ -30,14 +30,22 @@ async.waterfall([
       const nid = project_dash.nid[0].value
 
       load_projektkarte_projekt(id, (err, project_pk) => {
-        let update = convertToDashboard(project_pk)
-        const protokollEntry = {
+        let update = {}
+        const  protokollEntry = {
           type: [{ target_id: 'status_aenderung' }],
           title: [{ value: 'änderung' }],
           field_datum: [{ value: new Date().toISOString().substr(0, 10) }]
         }
 
-        update = findChanges(update, project_dash, protokollEntry)
+        if (project_pk) {
+          update = convertToDashboard(project_pk)
+
+          update = findChanges(update, project_dash, protokollEntry)
+        } else if (project_dash.field_status.length) {
+          protokollEntry.body = [{ value: 'Projekt von der Projektkarte entfernt', format: 'basic_html' }]
+          protokollEntry.field_status = []
+          update.field_status = []
+        }
 
         if (update.field_status) {
           update.field_status_change = [{ value: new Date().toISOString().substr(0, 10) }]

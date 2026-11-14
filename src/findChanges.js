@@ -30,7 +30,8 @@ function findChanges (project_pk, project_dash, protokollEntry) {
     }
   })
 
-  if (project_pk.field_status[0].target_id !== project_dash.field_status[0].target_id) {
+    console.log(project_dash.field_status)
+  if (!project_dash.field_status.length || project_pk.field_status[0].target_id !== project_dash.field_status[0].target_id) {
     protokollEntry.field_status = project_pk.field_status
   }
 
