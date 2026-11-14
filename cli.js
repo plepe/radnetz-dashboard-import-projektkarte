@@ -69,7 +69,13 @@ async.waterfall([
         } else if (project_pk) {
           update = convertToDashboard(project_pk)
 
-          update = findChanges(update, project_dash, protokollEntry)
+          try {
+            update = findChanges(update, project_dash, protokollEntry)
+          }
+          catch (err) {
+            console.log('Error finding changes for ' + id, err)
+            return done()
+          }
         } else if (project_dash.field_status.length) {
           protokollEntry.body = [{ value: 'Projekt von der Projektkarte entfernt', format: 'basic_html' }]
           protokollEntry.field_status = []
