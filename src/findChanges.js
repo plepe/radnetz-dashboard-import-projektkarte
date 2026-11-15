@@ -89,6 +89,7 @@ function findChanges (project_pk, project_dash, protokollEntry) {
       field_bild.push(img_dash)
     } else {
       img.alt += ' (veröffentlicht am ' + today + ')'
+      img.added = true
       field_bild.push(img)
       text_bild.push('Bild ' + filename + ' veröffentlicht<br>')
       done[filename] = true
@@ -113,9 +114,22 @@ function findChanges (project_pk, project_dash, protokollEntry) {
       text_bild.push('Bild ' + filename + ' entfernt<br>')
     }
 
+    img_dash.removed = true
     field_bild.push(img_dash)
     done[filename] = true
   })
+
+  // check order
+  const order_old = project_dash.field_bild
+    .filter(img => !img.removed)
+    .map(img => img.basename)
+  const order_new = project_pk.field_bild
+    .filter(img => !img.added)
+    .map(img => path.basename(img.data.src))
+
+  if (order_old.join(',') !== order_new.join(',')) {
+    text_bild.push('Bilder Reihenfolge geändert von: ' + order_old.join(', '))
+  }
 
   if (text_bild.length) {
     text += text_bild.join('\n')
