@@ -18,6 +18,17 @@ function convertToDashboard (project_pk) {
     }
   })
 
+  result.field_bild = []
+  project_pk.properties.images.forEach(image => {
+    result.field_bild.push({
+      target_type: 'fileUpload',
+      data: {
+        src: image.src,
+      },
+      alt: image.alt
+    })
+  })
+
   return result
 }
 
