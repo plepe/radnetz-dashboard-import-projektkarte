@@ -4,6 +4,7 @@
     "lint": "standard --fix cli.js src/*.js"
   },
   "dependencies": {
+    "argparse": "^3.0.4",
     "async": "^3.2.6",
     "drupal-rest": "github:plepe/drupal-rest-js",
     "js-yaml": "^4.1.0",
