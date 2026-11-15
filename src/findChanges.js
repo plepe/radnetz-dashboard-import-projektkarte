@@ -41,16 +41,27 @@ function findChanges (project_pk, project_dash, protokollEntry) {
 
   const current = {}
   const current_bild = {}
+  const done = {}
   project_dash.field_bild.forEach(img => {
     current_bild[img.target_id] = img
-    const filename = path.basename(img.url)
+    let filename = path.basename(img.url)
+    current[filename] = img.target_id
     const m = filename.match(/^(.*)\.([A-Za-z0-9]+)$/)
-    const m1 = m[1].match(/^(.*)_[0-9]+$/)
-    if (m1) {
-      current[m1[1] + '.' + m[2]] = img.target_id
-    } else {
-      current[filename] = img.target_id
+    let basename = m ? m[1] : ''
+
+    while (basename.match(/^(.*)_[0-9]$/)) {
+      const m1 = basename.match(/^(.*)_[0-9]$/)
+      if (m1) {
+        basename = m1[1]
+      }
     }
+
+    if (basename) {
+      filename = basename + '.' + m[2]
+    }
+
+    img.basename = filename
+    current[filename] = img.target_id
   })
 
   const field_bild = []
@@ -60,7 +71,7 @@ function findChanges (project_pk, project_dash, protokollEntry) {
 
     if (filename in current) {
       const img_dash = current_bild[current[filename]]
-      delete current_bild[current[filename]]
+      done[filename] = true
 
       let dash_alt = img_dash.alt
       let dash_comment = ''
@@ -80,10 +91,13 @@ function findChanges (project_pk, project_dash, protokollEntry) {
       img.alt += ' (veröffentlicht am ' + today + ')'
       field_bild.push(img)
       text_bild.push('Bild ' + filename + ' veröffentlicht<br>')
+      done[filename] = true
     }
   })
 
   Object.values(current_bild).forEach(img_dash => {
+    if (img_dash.basename in done) { return }
+
     const filename = path.basename(img_dash.url)
     const m = img_dash.alt.match(/^(.*) \(((entfernt|veröffentlicht).*)\)$/)
 
@@ -100,6 +114,7 @@ function findChanges (project_pk, project_dash, protokollEntry) {
     }
 
     field_bild.push(img_dash)
+    done[filename] = true
   })
 
   if (text_bild.length) {
